@@ -29,7 +29,7 @@ const Register = () => {
 
   return (
     <PageContainer>
-      <Logo>MeuApp<span>.</span></Logo>
+      <Logo>Gerenciador de Quadras<span>.</span></Logo>
       <AuthForm type="register" onSubmit={handleRegister} />
     </PageContainer>
   );

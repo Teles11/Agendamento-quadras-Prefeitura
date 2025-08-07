@@ -26,7 +26,7 @@ const Login = () => {
 
   return (
     <PageContainer>
-      <Logo>MeuApp<span>.</span></Logo>
+      <Logo>Gerenciador de Quadras<span>.</span></Logo>
       <AuthForm type="login" onSubmit={handleLogin} />
     </PageContainer>
   );
