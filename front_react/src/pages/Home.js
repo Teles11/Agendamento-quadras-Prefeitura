@@ -342,25 +342,46 @@ const Home = () => {
     .filter(r => r.quadra.id === selectedQuadra?.id && r.data === data)
     .map(r => r.horario);
 
+  // --- ESTADOS PARA FILTRO DE RESERVAS ---
+  const [filtroData, setFiltroData] = useState("");
+  const [filtroQuadra, setFiltroQuadra] = useState("");
+  const [reservasFiltradas, setReservasFiltradas] = useState(userData.reservas);
+
+  // Atualiza reservas filtradas sempre que filtros ou reservas mudam
+  React.useEffect(() => {
+    let filtradas = userData.reservas;
+    if (filtroData) {
+      filtradas = filtradas.filter(r => r.data === filtroData);
+    }
+    if (filtroQuadra) {
+      filtradas = filtradas.filter(r => String(r.quadra.id) === filtroQuadra);
+    }
+    setReservasFiltradas(filtradas);
+  }, [filtroData, filtroQuadra, userData.reservas]);
+
+  // Função para destacar o horário selecionado
+  const isHorarioSelecionado = (hora) => horarioSelecionado === hora;
+
   return (
     <Layout>
       <Sidebar>
         <SidebarTitle>🏀 Quadras</SidebarTitle>
         <SidebarItem active={activeMenu === "dashboard"} onClick={() => { setActiveMenu("dashboard"); setSelectedQuadra(null); }}>
-          Dashboard
+          <span role="img" aria-label="dashboard">🏠</span> Dashboard
         </SidebarItem>
         <SidebarItem active={activeMenu === "conta"} onClick={() => setActiveMenu("conta")}>
-          Minha Conta
+          <span role="img" aria-label="conta">👤</span> Minha Conta
         </SidebarItem>
         <SidebarItem active={activeMenu === "reservas"} onClick={() => setActiveMenu("reservas")}>
-          Minhas Reservas
+          <span role="img" aria-label="reservas">📖</span> Minhas Reservas
         </SidebarItem>
         <SidebarItem active={activeMenu === "faq"} onClick={() => setActiveMenu("faq")}>
-          FAQ
+          <span role="img" aria-label="faq">❓</span> FAQ
         </SidebarItem>
       </Sidebar>
 
       <Content>
+        {/* DASHBOARD */}
         {activeMenu === "dashboard" && !selectedQuadra && (
           <DashboardContainer>
             <Title>📅 Agendamento de Quadras</Title>
@@ -379,6 +400,7 @@ const Home = () => {
           </DashboardContainer>
         )}
 
+        {/* DETALHE DA QUADRA E AGENDAMENTO */}
         {activeMenu === "dashboard" && selectedQuadra && (
           <DetalheContainer>
             <Button onClick={() => setSelectedQuadra(null)}>⬅ Voltar</Button>
@@ -392,7 +414,7 @@ const Home = () => {
             <Input 
               type="date" 
               value={data} 
-              onChange={(e) => setData(e.target.value)}
+              onChange={(e) => { setData(e.target.value); setHorarioSelecionado(""); }}
               min={new Date().toISOString().split('T')[0]}
             />
             <h3>Selecione o Horário:</h3>
@@ -402,6 +424,11 @@ const Home = () => {
                   key={hora}
                   ocupado={horariosOcupados.includes(hora)}
                   disabled={horariosOcupados.includes(hora)}
+                  style={{
+                    border: isHorarioSelecionado(hora) ? "2px solid #007bff" : undefined,
+                    fontWeight: isHorarioSelecionado(hora) ? "bold" : undefined,
+                    background: isHorarioSelecionado(hora) ? "#0056b3" : (horariosOcupados.includes(hora) ? "#ccc" : "#007bff")
+                  }}
                   onClick={() => setHorarioSelecionado(hora)}
                 >
                   {hora}
@@ -409,362 +436,455 @@ const Home = () => {
               ))}
             </HorariosGrid>
             <div style={{ marginTop: "20px" }}>
-              <Button $primary onClick={handleConfirmar}>Confirmar</Button>
+              <Button $primary onClick={handleConfirmar} disabled={!data || !horarioSelecionado}>
+                Confirmar
+              </Button>
             </div>
           </DetalheContainer>
         )}
 
+        {/* MINHA CONTA */}
         {activeMenu === "conta" && (
-          <div style={{ maxWidth: "600px", margin: "0 auto", backgroundColor: "#fff", padding: "20px", borderRadius: "12px", boxShadow: "0 3px 6px rgba(0,0,0,0.1)" }}>
-            <Title>👤 Minha Conta</Title>
-            <div style={{ textAlign: "center", marginBottom: "20px" }}>
-              <img
-                src={userPhoto}
-                alt="Foto de perfil"
-                style={{
-                  width: "120px",
-                  height: "120px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  border: "3px solid #ddd",
-                  marginBottom: "10px",
-                }}
-              />
-              <div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handlePhotoChange}
-                  id="photo-upload"
-                  style={{ display: "none" }}
+          <div
+            style={{
+              maxWidth: "600px",
+              margin: "0 auto",
+              background: "linear-gradient(120deg, #f4f6fa 60%, #e0e7ff 100%)",
+              padding: "32px 28px",
+              borderRadius: "18px",
+              boxShadow: "0 8px 32px rgba(30,40,90,0.10)",
+              position: "relative",
+              overflow: "hidden"
+            }}
+          >
+            <Title>
+              <span role="img" aria-label="perfil">👤</span> Minha Conta
+            </Title>
+            <div style={{ textAlign: "center", marginBottom: "28px", position: "relative" }}>
+              <div style={{
+                display: "inline-block",
+                position: "relative"
+              }}>
+                <img
+                  src={userPhoto}
+                  alt="Foto de perfil"
+                  style={{
+                    width: "130px",
+                    height: "130px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "4px solid #4f8cff",
+                    boxShadow: "0 2px 12px rgba(79,140,255,0.10)",
+                    marginBottom: "10px",
+                    background: "#f4f6fa"
+                  }}
                 />
-                <label htmlFor="photo-upload">
-                  <Button as="span" style={{ cursor: "pointer" }}>
-                    📷 Alterar Foto
-                  </Button>
+                <label htmlFor="photo-upload" style={{
+                  position: "absolute",
+                  right: "8px",
+                  bottom: "12px",
+                  background: "#fff",
+                  borderRadius: "50%",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                  cursor: "pointer",
+                  border: "2px solid #4f8cff",
+                  width: "38px",
+                  height: "38px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    id="photo-upload"
+                    style={{ display: "none" }}
+                  />
+                  <span style={{ fontSize: "20px" }}>📷</span>
                 </label>
               </div>
+              <div style={{ fontSize: "13px", color: "#888", marginTop: "6px" }}>
+                Clique no ícone para alterar sua foto
+              </div>
             </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "500", color: "#333" }}>Nome</label>
+            <div style={{ marginBottom: "18px" }}>
+              <label style={{
+                display: "block",
+                marginBottom: "6px",
+                fontWeight: "600",
+                color: "#2a2a2a",
+                letterSpacing: "0.01em"
+              }}>Nome completo</label>
               <Input
                 value={userData.nome}
                 onChange={(e) => setUserData({ ...userData, nome: e.target.value })}
+                placeholder="Seu nome completo"
+                style={{ background: "#f7faff" }}
               />
             </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "500", color: "#333" }}>E-mail</label>
+            <div style={{ marginBottom: "18px" }}>
+              <label style={{
+                display: "block",
+                marginBottom: "6px",
+                fontWeight: "600",
+                color: "#2a2a2a",
+                letterSpacing: "0.01em"
+              }}>E-mail</label>
               <Input
                 type="email"
                 value={userData.email}
                 onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+                placeholder="Seu e-mail"
+                style={{ background: "#f7faff" }}
               />
             </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "500", color: "#333" }}>Endereço</label>
+            <div style={{ marginBottom: "18px" }}>
+              <label style={{
+                display: "block",
+                marginBottom: "6px",
+                fontWeight: "600",
+                color: "#2a2a2a",
+                letterSpacing: "0.01em"
+              }}>Endereço</label>
               <Input
                 value={userData.endereco}
                 onChange={(e) => setUserData({ ...userData, endereco: e.target.value })}
+                placeholder="Seu endereço"
+                style={{ background: "#f7faff" }}
               />
             </div>
-            <div style={{ marginTop: "20px", textAlign: "center" }}>
-              <Button $primary onClick={handleSave}>
+            <div style={{ marginTop: "28px", textAlign: "center" }}>
+              <Button
+                $primary
+                style={{
+                  padding: "12px 36px",
+                  fontSize: "16px",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 8px rgba(79,140,255,0.10)"
+                }}
+                onClick={handleSave}
+              >
                 💾 Salvar Alterações
               </Button>
             </div>
           </div>
         )}
 
+        {/* MINHAS RESERVAS */}
         {activeMenu === "reservas" && (
           <DashboardContainer>
-            <Title>📖 Minhas Reservas</Title>
-            
-            <div style={{ 
-              display: 'flex', 
-              gap: '15px', 
-              marginBottom: '30px',
-              backgroundColor: '#fff',
-              padding: '20px',
-              borderRadius: '12px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-              flexWrap: 'wrap'
+            <Title>
+              <span role="img" aria-label="reservas">📖</span> Minhas Reservas
+            </Title>
+            {/* FILTROS */}
+            <div style={{
+              display: 'flex',
+              gap: '18px',
+              marginBottom: '32px',
+              background: 'linear-gradient(120deg, #fff 60%, #e0e7ff 100%)',
+              padding: '24px 20px',
+              borderRadius: '14px',
+              boxShadow: '0 4px 16px rgba(30,40,90,0.07)',
+              flexWrap: 'wrap',
+              alignItems: 'flex-end'
             }}>
-              <div style={{ flex: '1 1 200px' }}>
-                <label style={{ 
-                  display: 'block', 
-                  marginBottom: '8px', 
+              <div style={{ flex: '1 1 200px', minWidth: 180 }}>
+                <label style={{
+                  display: 'block',
+                  marginBottom: '8px',
                   fontWeight: '600',
-                  color: '#333'
+                  color: '#2a2a2a'
                 }}>Filtrar por data</label>
-                <Input 
-                  type="date" 
-                  onChange={(e) => console.log('Filtrar por data:', e.target.value)}
+                <Input
+                  type="date"
+                  value={filtroData}
+                  onChange={e => setFiltroData(e.target.value)}
+                  style={{ background: "#f7faff" }}
                 />
               </div>
-              <div style={{ flex: '1 1 200px' }}>
-                <label style={{ 
-                  display: 'block', 
-                  marginBottom: '8px', 
+              <div style={{ flex: '1 1 200px', minWidth: 180 }}>
+                <label style={{
+                  display: 'block',
+                  marginBottom: '8px',
                   fontWeight: '600',
-                  color: '#333'
+                  color: '#2a2a2a'
                 }}>Filtrar por quadra</label>
                 <select style={{
                   width: '100%',
                   padding: '10px',
                   border: '1px solid #e0e0e0',
                   borderRadius: '8px',
-                  fontSize: '14px'
-                }}>
+                  fontSize: '14px',
+                  background: "#f7faff"
+                }}
+                  value={filtroQuadra}
+                  onChange={e => setFiltroQuadra(e.target.value)}
+                >
                   <option value="">Todas as quadras</option>
                   {Quadras.map(quadra => (
                     <option key={quadra.id} value={quadra.id}>{quadra.nome}</option>
                   ))}
                 </select>
               </div>
-              <div style={{ 
-                flex: '0 1 100px',
+              <div style={{
+                flex: '0 1 120px',
                 display: 'flex',
-                alignItems: 'flex-end'
+                alignItems: 'flex-end',
+                gap: 8
               }}>
-                <Button $primary style={{ width: '100%' }}>
+                <Button
+                  $primary
+                  style={{
+                    width: '100%',
+                    padding: "10px 0",
+                    fontWeight: 600,
+                    fontSize: "15px"
+                  }}
+                  onClick={() => { /* Filtro já é reativo, botão é apenas visual */ }}
+                  tabIndex={-1}
+                >
                   <span style={{ marginRight: '5px' }}>🔍</span> Filtrar
                 </Button>
-              </div>
-            </div>
-
-            <div style={{
-              backgroundColor: '#fff',
-              borderRadius: '12px',
-              padding: '0',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1.2fr 0.8fr 0.8fr 1.2fr 0.8fr 0.8fr 0.8fr',
-                gap: '15px',
-                padding: '15px 20px',
-                backgroundColor: '#1a1a2e',
-                color: 'white',
-                fontWeight: '600',
-                alignItems: 'center'
-              }}>
-                <div>Quadra</div>
-                <div>Data</div>
-                <div>Horário</div>
-                <div>Reservado em</div>
-                <div>Status</div>
-                <div style={{ textAlign: 'center' }}>Documento</div>
-                <div style={{ textAlign: 'center' }}>Ações</div>
-              </div>
-
-              <div style={{ maxHeight: '500px', overflowY: 'auto' }}>
-                {userData.reservas.map(reserva => (
-                  <div 
-                    key={reserva.id}
+                {(filtroData || filtroQuadra) && (
+                  <Button
+                    $small
                     style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1.2fr 0.8fr 0.8fr 1.2fr 0.8fr 0.8fr 0.8fr',
-                      gap: '15px',
-                      padding: '15px 20px',
-                      borderBottom: '1px solid #f0f0f0',
-                      alignItems: 'center',
-                      transition: 'background 0.2s',
-                      ':hover': {
-                        backgroundColor: '#f9f9f9'
-                      }
+                      background: "#f0f0f0",
+                      color: "#333",
+                      fontWeight: 500,
+                      padding: "10px 14px"
                     }}
+                    onClick={() => { setFiltroData(""); setFiltroQuadra(""); }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <img 
-                        src={reserva.quadra.imagem} 
-                        alt={reserva.quadra.nome}
-                        style={{
-                          width: '50px',
-                          height: '50px',
-                          borderRadius: '6px',
-                          objectFit: 'cover'
-                        }}
-                      />
-                      <div>
-                        <div style={{ fontWeight: '600', fontSize: '14px' }}>{reserva.quadra.nome}</div>
-                        <div style={{ fontSize: '12px', color: '#666' }}>{reserva.quadra.bairro}</div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <div style={{ fontWeight: '500', fontSize: '14px' }}>
-                        {new Date(reserva.data).toLocaleDateString('pt-BR')}
-                      </div>
-                      <div style={{ fontSize: '12px', color: '#666' }}>
-                        {new Date(reserva.data).toLocaleDateString('pt-BR', { weekday: 'short' })}
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <div style={{
-                        display: 'inline-block',
-                        backgroundColor: '#e6f7ff',
-                        color: '#0077b6',
-                        padding: '4px 8px',
-                        borderRadius: '12px',
-                        fontWeight: '600',
-                        fontSize: '13px'
-                      }}>
-                        {reserva.horario}
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <div style={{ fontWeight: '500', fontSize: '14px' }}>
-                        {new Date(reserva.dataReserva).toLocaleDateString('pt-BR')}
-                      </div>
-                      <div style={{ fontSize: '12px', color: '#666' }}>
-                        às {new Date(reserva.dataReserva).toLocaleTimeString('pt-BR', {
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <span style={{
-                        padding: '5px 10px',
-                        borderRadius: '12px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        display: 'inline-block',
-                        backgroundColor: 
-                          reserva.status === 'Confirmado' ? '#e6f7ee' :
-                          reserva.status === 'Pendente' ? '#fff8e6' : '#ffebee',
-                        color: 
-                          reserva.status === 'Confirmado' ? '#28a745' :
-                          reserva.status === 'Pendente' ? '#ffc107' : '#dc3545'
-                      }}>
-                        {reserva.status}
-                      </span>
-                    </div>
-                    
-                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                      {reserva.status !== 'Cancelado' ? (
-                        <Button 
-                          $small 
-                          style={{
-                            backgroundColor: '#4CAF50',
-                            color: 'white',
-                            minWidth: '90px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '5px',
-                            padding: '6px 10px'
-                          }}
-                          onClick={() => gerarAlvaraPDF(reserva)}
-                        >
-                          <span>📄</span>
-                          <span style={{ fontSize: '12px' }}>Emitir Alvará</span>
-                        </Button>
-                      ) : (
-                        <span style={{ fontSize: '12px', color: '#666', fontStyle: 'italic' }}>
-                          Indisponível
-                        </span>
-                      )}
-                    </div>
-                    
-                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                      <Button 
-                        $small 
-                        style={{
-                          backgroundColor: '#f0f0f0',
-                          color: '#333',
-                          minWidth: '30px',
-                          padding: '6px'
-                        }}
-                        onClick={() => {
-                          alert(`📋 Detalhes da reserva:
-                            \n🏟️ Quadra: ${reserva.quadra.nome}
-                            \n📅 Data: ${new Date(reserva.data).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                            \n⏰ Horário: ${reserva.horario}
-                            \n📝 Reservado em: ${new Date(reserva.dataReserva).toLocaleString('pt-BR')}
-                            \n🆔 Código: ${reserva.codigo}
-                            \n📌 Status: ${reserva.status}`);
-                        }}
-                      >
-                        👁️
-                      </Button>
-                      
-                      {reserva.status !== 'Cancelado' && (
-                        <Button 
-                          $small 
-                          $danger
-                          style={{ minWidth: '30px', padding: '6px' }}
-                          onClick={() => {
-                            if(window.confirm(`Deseja realmente cancelar a reserva na ${reserva.quadra.nome} para ${new Date(reserva.data).toLocaleDateString('pt-BR')} às ${reserva.horario}?`)) {
-                              setUserData(prev => ({
-                                ...prev,
-                                reservas: prev.reservas.map(r => 
-                                  r.id === reserva.id ? { ...r, status: 'Cancelado' } : r
-                                )
-                              }));
-                              alert('Reserva cancelada com sucesso!');
-                            }
-                          }}
-                        >
-                          ❌
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-
-                {userData.reservas.length === 0 && (
-                  <div style={{
-                    textAlign: 'center',
-                    padding: '50px 20px',
-                    color: '#666'
-                  }}>
-                    <div style={{ fontSize: '60px', marginBottom: '20px', opacity: '0.5' }}>📭</div>
-                    <h3 style={{ marginBottom: '15px', color: '#444' }}>Nenhuma reserva encontrada</h3>
-                    <p style={{ maxWidth: '500px', margin: '0 auto 25px', lineHeight: '1.6' }}>
-                      Você ainda não fez nenhuma reserva ou não há reservas com os filtros aplicados.
-                    </p>
-                    <Button 
-                      $primary 
-                      style={{ marginTop: '10px', padding: '12px 24px' }}
-                      onClick={() => setActiveMenu('dashboard')}
-                    >
-                      🏀 Reservar uma quadra agora
-                    </Button>
-                  </div>
+                    Limpar
+                  </Button>
                 )}
               </div>
-
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '15px 20px',
-                backgroundColor: '#f9f9f9',
-                borderTop: '1px solid #eee'
-              }}>
-                <div style={{ color: '#666', fontSize: '14px', fontWeight: '500' }}>
-                  Mostrando {userData.reservas.length} reserva{userData.reservas.length !== 1 ? 's' : ''}
-                </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <Button $small disabled style={{ minWidth: '80px' }}>
-                    ⏪ Anterior
-                  </Button>
-                  <Button $small $primary style={{ minWidth: '36px' }}>
-                    1
-                  </Button>
-                  <Button $small disabled style={{ minWidth: '80px' }}>
-                    Próximo ⏩
-                  </Button>
-                </div>
-              </div>
             </div>
+            {/* TABELA DE RESERVAS */}
+                          <div style={{
+                            backgroundColor: '#fff',
+                            borderRadius: '12px',
+                            padding: '0',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                            overflow: 'hidden'
+                          }}>
+                            <table style={{
+                            width: '100%',
+                            borderCollapse: 'collapse',
+                            fontSize: '15px'
+                            }}>
+                            <thead>
+                              <tr style={{
+                              backgroundColor: '#1a1a2e',
+                              color: 'white',
+                              fontWeight: 600
+                              }}>
+                              <th style={{ padding: '15px 12px', textAlign: 'left', minWidth: 180 }}>Quadra</th>
+                              <th style={{ padding: '15px 12px', minWidth: 90 }}>Data</th>
+                              <th style={{ padding: '15px 12px', minWidth: 80 }}>Horário</th>
+                              <th style={{ padding: '15px 12px', minWidth: 120 }}>Reservado</th>
+                              <th style={{ padding: '15px 12px', minWidth: 90 }}>Status</th>
+                              <th style={{ padding: '15px 12px', minWidth: 110, textAlign: 'center' }}>Documento</th>
+                              <th style={{ padding: '15px 12px', minWidth: 90, textAlign: 'center' }}>Ações</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {reservasFiltradas.map(reserva => (
+                              <tr
+                                key={reserva.id}
+                                style={{
+                                background: reserva.status === "Cancelado" ? "#f8d7da" : undefined,
+                                opacity: reserva.status === "Cancelado" ? 0.6 : 1,
+                                transition: 'background 0.2s'
+                                }}
+                              >
+                                <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                  <img
+                                  src={reserva.quadra.imagem}
+                                  alt={reserva.quadra.nome}
+                                  style={{
+                                    width: '48px',
+                                    height: '48px',
+                                    borderRadius: '6px',
+                                    objectFit: 'cover',
+                                    border: '1px solid #e0e0e0'
+                                  }}
+                                  />
+                                  <div>
+                                  <div style={{ fontWeight: '600', fontSize: '14px' }}>{reserva.quadra.nome}</div>
+                                  <div style={{ fontSize: '12px', color: '#666' }}>{reserva.quadra.bairro}</div>
+                                  </div>
+                                </div>
+                                </td>
+                                <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
+                                <div style={{ fontWeight: '500', fontSize: '14px' }}>
+                                  {new Date(reserva.data).toLocaleDateString('pt-BR')}
+                                </div>
+                                <div style={{ fontSize: '12px', color: '#666' }}>
+                                  {new Date(reserva.data).toLocaleDateString('pt-BR', { weekday: 'short' })}
+                                </div>
+                                </td>
+                                <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
+                                <span style={{
+                                  display: 'inline-block',
+                                  backgroundColor: '#e6f7ff',
+                                  color: '#0077b6',
+                                  padding: '4px 10px',
+                                  borderRadius: '12px',
+                                  fontWeight: '600',
+                                  fontSize: '13px'
+                                }}>
+                                  {reserva.horario}
+                                </span>
+                                </td>
+                                <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
+                                <div style={{ fontWeight: '500', fontSize: '14px' }}>
+                                  {new Date(reserva.dataReserva).toLocaleDateString('pt-BR')}
+                                </div>
+                                <div style={{ fontSize: '12px', color: '#666' }}>
+                                  às {new Date(reserva.dataReserva).toLocaleTimeString('pt-BR', {
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                  })}
+                                </div>
+                                </td>
+                                <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
+                                <span style={{
+                                  padding: '5px 10px',
+                                  borderRadius: '12px',
+                                  fontSize: '12px',
+                                  fontWeight: '600',
+                                  display: 'inline-block',
+                                  backgroundColor:
+                                  reserva.status === 'Confirmado' ? '#e6f7ee' :
+                                  reserva.status === 'Pendente' ? '#fff8e6' : '#ffebee',
+                                  color:
+                                  reserva.status === 'Confirmado' ? '#28a745' :
+                                  reserva.status === 'Pendente' ? '#ffc107' : '#dc3545'
+                                }}>
+                                  {reserva.status}
+                                </span>
+                                </td>
+                                <td style={{ padding: '14px 12px', textAlign: 'center', verticalAlign: 'middle' }}>
+                                {reserva.status !== 'Cancelado' ? (
+                                  <Button
+                                  $small
+                                  style={{
+                                    backgroundColor: '#4CAF50',
+                                    color: 'white',
+                                    minWidth: '90px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '5px',
+                                    padding: '6px 10px',
+                                    justifyContent: 'center'
+                                  }}
+                                  onClick={() => gerarAlvaraPDF(reserva)}
+                                  >
+                                  <span>📄</span>
+                                  <span style={{ fontSize: '12px' }}>Emitir Alvará</span>
+                                  </Button>
+                                ) : (
+                                  <span style={{ fontSize: '12px', color: '#666', fontStyle: 'italic' }}>
+                                  Indisponível
+                                  </span>
+                                )}
+                                </td>
+                                <td style={{ padding: '14px 12px', textAlign: 'center', verticalAlign: 'middle' }}>
+                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                  <Button
+                                  $small
+                                  style={{
+                                    backgroundColor: '#f0f0f0',
+                                    color: '#333',
+                                    minWidth: '30px',
+                                    padding: '6px'
+                                  }}
+                                  onClick={() => {
+                                    alert(`📋 Detalhes da reserva:
+                    🏟️ Quadra: ${reserva.quadra.nome}
+                    📅 Data: ${new Date(reserva.data).toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                    ⏰ Horário: ${reserva.horario}
+                    📝 Reservado em: ${new Date(reserva.dataReserva).toLocaleString('pt-BR')}
+                    🆔 Código: ${reserva.codigo}
+                    📌 Status: ${reserva.status}`);
+                                  }}
+                                  >
+                                  👁️
+                                  </Button>
+                                  {reserva.status !== 'Cancelado' && (
+                                  <Button
+                                    $small
+                                    $danger
+                                    style={{ minWidth: '30px', padding: '6px' }}
+                                    onClick={() => {
+                                    if (window.confirm(`Deseja realmente cancelar a reserva na ${reserva.quadra.nome} para ${new Date(reserva.data).toLocaleDateString('pt-BR')} às ${reserva.horario}?`)) {
+                                      setUserData(prev => ({
+                                      ...prev,
+                                      reservas: prev.reservas.map(r =>
+                                        r.id === reserva.id ? { ...r, status: 'Cancelado' } : r
+                                      )
+                                      }));
+                                      alert('Reserva cancelada com sucesso!');
+                                    }
+                                    }}
+                                  >
+                                    ❌
+                                  </Button>
+                                  )}
+                                </div>
+                                </td>
+                              </tr>
+                              ))}
+                              {reservasFiltradas.length === 0 && (
+                              <tr>
+                                <td colSpan={7} style={{ textAlign: 'center', padding: '50px 20px', color: '#666' }}>
+                                <div style={{ fontSize: '60px', marginBottom: '20px', opacity: '0.5' }}>📭</div>
+                                <h3 style={{ marginBottom: '15px', color: '#444' }}>Nenhuma reserva encontrada</h3>
+                                <p style={{ maxWidth: '500px', margin: '0 auto 25px', lineHeight: '1.6' }}>
+                                  Você ainda não fez nenhuma reserva ou não há reservas com os filtros aplicados.
+                                </p>
+                                <Button
+                                  $primary
+                                  style={{ marginTop: '10px', padding: '12px 24px' }}
+                                  onClick={() => setActiveMenu('dashboard')}
+                                >
+                                  🏀 Reservar uma quadra agora
+                                </Button>
+                                </td>
+                              </tr>
+                              )}
+                            </tbody>
+                            </table>
+                            <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            padding: '15px 20px',
+                            backgroundColor: '#f9f9f9',
+                            borderTop: '1px solid #eee'
+                            }}>
+                            <div style={{ color: '#666', fontSize: '14px', fontWeight: '500' }}>
+                              Mostrando {reservasFiltradas.length} reserva{reservasFiltradas.length !== 1 ? 's' : ''}
+                            </div>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              <Button $small disabled style={{ minWidth: '10px' }}>
+                              ⏪ Anterior
+                              </Button>
+                              <Button $small $primary style={{ minWidth: '36px' }}>
+                              1
+                              </Button>
+                              <Button $small disabled style={{ minWidth: '80px' }}>
+                              Próximo ⏩
+                              </Button>
+                            </div>
+                            </div>
+                          </div>
           </DashboardContainer>
         )}
-
         {activeMenu === "faq" && (
           <div style={{ maxWidth: "800px", margin: "0 auto" }}>
             <Title>❓ Perguntas Frequentes (FAQ)</Title>
