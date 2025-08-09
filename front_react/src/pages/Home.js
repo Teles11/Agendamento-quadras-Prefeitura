@@ -579,7 +579,7 @@ const Home = () => {
             </Title>
             {/* FILTROS */}
             <div style={{
-              display: 'flex',
+              display: 'grid',
               gap: '18px',
               marginBottom: '32px',
               background: 'linear-gradient(120deg, #fff 60%, #e0e7ff 100%)',
@@ -631,7 +631,8 @@ const Home = () => {
                 flex: '0 1 120px',
                 display: 'flex',
                 alignItems: 'flex-end',
-                gap: 8
+                gap: 8,
+                width: '100%',
               }}>
                 <Button
                   $primary
@@ -653,11 +654,13 @@ const Home = () => {
                       background: "#f0f0f0",
                       color: "#333",
                       fontWeight: 500,
-                      padding: "10px 14px"
+                      padding: "10px 0",
+                      width: '100%',
+                      fontSize: "15px"
                     }}
                     onClick={() => { setFiltroData(""); setFiltroQuadra(""); }}
                   >
-                    Limpar
+                    <span style={{ marginRight: '5px' }}>🧹</span> Limpar
                   </Button>
                 )}
               </div>
@@ -831,72 +834,59 @@ const Home = () => {
                                       alert('Reserva cancelada com sucesso!');
                                     }
                                     }}
-                                  >
+                                    >
                                     ❌
+                                    </Button>
+                                    )}
+                                  </div>
+                                  </td>
+                                  </tr>
+                                  ))}
+                                  {reservasFiltradas.length === 0 && (
+                                  <tr>
+                                  <td colSpan={7} style={{ textAlign: 'center', padding: '50px 20px', color: '#666' }}>
+                                  <div style={{ fontSize: '60px', marginBottom: '20px', opacity: '0.5' }}>📭</div>
+                                  <h3 style={{ marginBottom: '15px', color: '#444' }}>Nenhuma reserva encontrada</h3>
+                                  <p style={{ maxWidth: '500px', margin: '0 auto 25px', lineHeight: '1.6' }}>
+                                    Você ainda não fez nenhuma reserva ou não há reservas com os filtros aplicados.
+                                  </p>
+                                  <Button
+                                    $primary
+                                    style={{ marginTop: '10px', padding: '12px 24px' }}
+                                    onClick={() => setActiveMenu('dashboard')}
+                                  >
+                                    🏀 Reservar uma quadra agora
                                   </Button>
+                                  </td>
+                                  </tr>
                                   )}
+                                </tbody>
+                                </table>
+                                <div style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                padding: '15px 20px',
+                                backgroundColor: '#f9f9f9',
+                                borderTop: '1px solid #eee'
+                                }}>
+                                <div style={{ color: '#666', fontSize: '14px', fontWeight: '500' }}>
+                                  Mostrando {reservasFiltradas.length} reserva{reservasFiltradas.length !== 1 ? 's' : ''}
                                 </div>
-                                </td>
-                              </tr>
-                              ))}
-                              {reservasFiltradas.length === 0 && (
-                              <tr>
-                                <td colSpan={7} style={{ textAlign: 'center', padding: '50px 20px', color: '#666' }}>
-                                <div style={{ fontSize: '60px', marginBottom: '20px', opacity: '0.5' }}>📭</div>
-                                <h3 style={{ marginBottom: '15px', color: '#444' }}>Nenhuma reserva encontrada</h3>
-                                <p style={{ maxWidth: '500px', margin: '0 auto 25px', lineHeight: '1.6' }}>
-                                  Você ainda não fez nenhuma reserva ou não há reservas com os filtros aplicados.
-                                </p>
-                                <Button
-                                  $primary
-                                  style={{ marginTop: '10px', padding: '12px 24px' }}
-                                  onClick={() => setActiveMenu('dashboard')}
-                                >
-                                  🏀 Reservar uma quadra agora
-                                </Button>
-                                </td>
-                              </tr>
-                              )}
-                            </tbody>
-                            </table>
-                            <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '15px 20px',
-                            backgroundColor: '#f9f9f9',
-                            borderTop: '1px solid #eee'
-                            }}>
-                            <div style={{ color: '#666', fontSize: '14px', fontWeight: '500' }}>
-                              Mostrando {reservasFiltradas.length} reserva{reservasFiltradas.length !== 1 ? 's' : ''}
-                            </div>
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                              <Button $small disabled style={{ minWidth: '10px' }}>
-                              ⏪ Anterior
-                              </Button>
-                              <Button $small $primary style={{ minWidth: '36px' }}>
-                              1
-                              </Button>
-                              <Button $small disabled style={{ minWidth: '80px' }}>
-                              Próximo ⏩
-                              </Button>
-                            </div>
-                            </div>
-                          </div>
-          </DashboardContainer>
-        )}
-        {activeMenu === "faq" && (
-          <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-            <Title>❓ Perguntas Frequentes (FAQ)</Title>
-            <div style={{
-              backgroundColor: "#fff",
-              borderRadius: "12px",
-              padding: "20px",
-              boxShadow: "0 3px 6px rgba(0,0,0,0.1)",
-            }}>
-              {/* ... conteúdo do FAQ permanece o mesmo ... */}
-            </div>
-          </div>
+                                <div style={{ display: 'flex', gap: '8px' }}>
+                                  <Button $small disabled style={{ minWidth: '1px', padding: '6px 10px', fontSize: '13px' }}>
+                                  ⏪ Anterior
+                                  </Button>
+                                  <Button $small $primary style={{ minWidth: '28px', padding: '6px 10px', fontSize: '13px' }}>
+                                  1
+                                  </Button>
+                                  <Button $small disabled style={{ minWidth: '60px', padding: '6px 10px', fontSize: '13px' }}>
+                                  Próximo ⏩
+                                  </Button>
+                                </div>
+                                </div>
+                                </div>
+            </DashboardContainer>
         )}
       </Content>
     </Layout>
