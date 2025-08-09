@@ -443,134 +443,267 @@ const Home = () => {
           </DetalheContainer>
         )}
 
-        {/* MINHA CONTA */}
-        {activeMenu === "conta" && (
-          <div
-            style={{
-              maxWidth: "600px",
-              margin: "0 auto",
-              background: "linear-gradient(120deg, #f4f6fa 60%, #e0e7ff 100%)",
-              padding: "32px 28px",
-              borderRadius: "18px",
-              boxShadow: "0 8px 32px rgba(30,40,90,0.10)",
-              position: "relative",
-              overflow: "hidden"
-            }}
-          >
-            <Title>
-              <span role="img" aria-label="perfil">👤</span> Minha Conta
-            </Title>
-            <div style={{ textAlign: "center", marginBottom: "28px", position: "relative" }}>
-              <div style={{
-                display: "inline-block",
-                position: "relative"
-              }}>
-                <img
-                  src={userPhoto}
-                  alt="Foto de perfil"
-                  style={{
-                    width: "130px",
-                    height: "130px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                    border: "4px solid #4f8cff",
-                    boxShadow: "0 2px 12px rgba(79,140,255,0.10)",
-                    marginBottom: "10px",
-                    background: "#f4f6fa"
-                  }}
-                />
-                <label htmlFor="photo-upload" style={{
-                  position: "absolute",
-                  right: "8px",
-                  bottom: "12px",
-                  background: "#fff",
-                  borderRadius: "50%",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-                  cursor: "pointer",
-                  border: "2px solid #4f8cff",
-                  width: "38px",
-                  height: "38px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center"
-                }}>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handlePhotoChange}
-                    id="photo-upload"
-                    style={{ display: "none" }}
-                  />
-                  <span style={{ fontSize: "20px" }}>📷</span>
-                </label>
-              </div>
-              <div style={{ fontSize: "13px", color: "#888", marginTop: "6px" }}>
-                Clique no ícone para alterar sua foto
-              </div>
-            </div>
-            <div style={{ marginBottom: "18px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                fontWeight: "600",
-                color: "#2a2a2a",
-                letterSpacing: "0.01em"
-              }}>Nome completo</label>
-              <Input
-                value={userData.nome}
-                onChange={(e) => setUserData({ ...userData, nome: e.target.value })}
-                placeholder="Seu nome completo"
-                style={{ background: "#f7faff" }}
-              />
-            </div>
-            <div style={{ marginBottom: "18px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                fontWeight: "600",
-                color: "#2a2a2a",
-                letterSpacing: "0.01em"
-              }}>E-mail</label>
-              <Input
-                type="email"
-                value={userData.email}
-                onChange={(e) => setUserData({ ...userData, email: e.target.value })}
-                placeholder="Seu e-mail"
-                style={{ background: "#f7faff" }}
-              />
-            </div>
-            <div style={{ marginBottom: "18px" }}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                fontWeight: "600",
-                color: "#2a2a2a",
-                letterSpacing: "0.01em"
-              }}>Endereço</label>
-              <Input
-                value={userData.endereco}
-                onChange={(e) => setUserData({ ...userData, endereco: e.target.value })}
-                placeholder="Seu endereço"
-                style={{ background: "#f7faff" }}
-              />
-            </div>
-            <div style={{ marginTop: "28px", textAlign: "center" }}>
-              <Button
-                $primary
-                style={{
-                  padding: "12px 36px",
-                  fontSize: "16px",
-                  borderRadius: "8px",
-                  boxShadow: "0 2px 8px rgba(79,140,255,0.10)"
-                }}
-                onClick={handleSave}
-              >
-                💾 Salvar Alterações
-              </Button>
-            </div>
-          </div>
-        )}
+  {/* MINHA CONTA - VERSÃO INTEGRADA E APRIMORADA */}
+{activeMenu === "conta" && (
+  <div
+    style={{
+      maxWidth: "600px",
+      margin: "30px auto",
+      background: "linear-gradient(120deg, #f5f8ff 60%, #eef2ff 100%)",
+      padding: "36px 30px",
+      borderRadius: "20px",
+      boxShadow: "0 10px 30px rgba(30, 40, 90, 0.12)",
+      position: "relative",
+      overflow: "hidden",
+      fontFamily: "'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Open Sans', sans-serif",
+      color: "#2d3748",
+      border: "1px solid #e6ebf0",
+    }}
+  >
+    {/* Título */}
+    <Title
+      style={{
+        color: "#1a365d",
+        textAlign: "center",
+        marginBottom: "30px",
+        fontSize: "1.9rem",
+        fontWeight: "600",
+        letterSpacing: "-0.02em",
+      }}
+    >
+      <span role="img" aria-label="perfil" style={{ marginRight: "12px", fontSize: "1.5em" }}>
+        👤
+      </span>
+      Minha Conta
+    </Title>
 
+    {/* Seção de Foto de Perfil */}
+    <div style={{ textAlign: "center", marginBottom: "32px" }}>
+      <div style={{ display: "inline-block", position: "relative" }}>
+        <img
+          src={userPhoto || "https://via.placeholder.com/130/4f8cff/ffffff?text=Foto"}
+          alt="Foto de perfil"
+          style={{
+            width: "130px",
+            height: "130px",
+            borderRadius: "50%",
+            objectFit: "cover",
+            border: "4px solid #4f8cff",
+            boxShadow: "0 4px 16px rgba(79, 140, 255, 0.15)",
+            marginBottom: "12px",
+            background: "#f4f6fa",
+            transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
+          onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        />
+        <label
+          htmlFor="photo-upload"
+          style={{
+            position: "absolute",
+            bottom: "8px",
+            right: "8px",
+            background: "#ffffff",
+            borderRadius: "50%",
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.12)",
+            cursor: "pointer",
+            border: "2px solid #4f8cff",
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            transition: "all 0.2s ease",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = "scale(1.1)";
+            e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.16)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = "scale(1)";
+            e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.12)";
+          }}
+        >
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoChange}
+            id="photo-upload"
+            style={{ display: "none" }}
+          />
+          <span style={{ fontSize: "20px" }}>📷</span>
+        </label>
+      </div>
+      <div
+        style={{
+          fontSize: "13px",
+          color: "#718096",
+          marginTop: "6px",
+          fontStyle: "italic",
+        }}
+      >
+        Clique no ícone para alterar sua foto
+      </div>
+    </div>
+
+    {/* Formulário de Dados */}
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      {/* Campo Nome */}
+      <div style={{ marginBottom: "22px" }}>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "8px",
+            fontWeight: "600",
+            color: "#1a202c",
+            letterSpacing: "0.01em",
+            fontSize: "0.95rem",
+          }}
+        >
+          Nome completo
+        </label>
+        <Input
+          value={userData.nome || "João Silva"}
+          onChange={(e) => setUserData({ ...userData, nome: e.target.value })}
+          placeholder="Seu nome completo"
+          style={{
+            width: "100%",
+            padding: "13px 16px",
+            border: "1px solid #dadee5",
+            borderRadius: "10px",
+            background: "#ffffff",
+            transition: "all 0.3s ease",
+            fontSize: "0.95rem",
+            outline: "none",
+            boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.05)",
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = "#4f8cff";
+            e.currentTarget.style.boxShadow = "0 0 0 4px rgba(79, 140, 255, 0.2)";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = "#dadee5";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        />
+      </div>
+
+      {/* Campo E-mail */}
+      <div style={{ marginBottom: "22px" }}>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "8px",
+            fontWeight: "600",
+            color: "#1a202c",
+            letterSpacing: "0.01em",
+            fontSize: "0.95rem",
+          }}
+        >
+          E-mail
+        </label>
+        <Input
+          type="email"
+          value={userData.email || "joao.silva@email.com"}
+          onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+          placeholder="Seu e-mail"
+          style={{
+            width: "100%",
+            padding: "13px 16px",
+            border: "1px solid #dadee5",
+            borderRadius: "10px",
+            background: "#ffffff",
+            transition: "all 0.3s ease",
+            fontSize: "0.95rem",
+            outline: "none",
+            boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.05)",
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = "#4f8cff";
+            e.currentTarget.style.boxShadow = "0 0 0 4px rgba(79, 140, 255, 0.2)";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = "#dadee5";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        />
+      </div>
+
+      {/* Campo Endereço */}
+      <div style={{ marginBottom: "22px" }}>
+        <label
+          style={{
+            display: "block",
+            marginBottom: "8px",
+            fontWeight: "600",
+            color: "#1a202c",
+            letterSpacing: "0.01em",
+            fontSize: "0.95rem",
+          }}
+        >
+          Endereço
+        </label>
+        <Input
+          value={userData.endereco || "Av. Principal, 123 - Centro, Cidade - UF"}
+          onChange={(e) => setUserData({ ...userData, endereco: e.target.value })}
+          placeholder="Seu endereço"
+          style={{
+            width: "100%",
+            padding: "13px 16px",
+            border: "1px solid #dadee5",
+            borderRadius: "10px",
+            background: "#ffffff",
+            transition: "all 0.3s ease",
+            fontSize: "0.95rem",
+            outline: "none",
+            boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.05)",
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = "#4f8cff";
+            e.currentTarget.style.boxShadow = "0 0 0 4px rgba(79, 140, 255, 0.2)";
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = "#dadee5";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        />
+      </div>
+
+      {/* Botão de Salvar */}
+      <div style={{ marginTop: "28px", textAlign: "center" }}>
+        <Button
+          $primary
+          onClick={handleSave}
+          style={{
+            padding: "13px 40px",
+            fontSize: "16px",
+            fontWeight: "600",
+            color: "#ffffff",
+            background: "#4f8cff",
+            border: "none",
+            borderRadius: "10px",
+            boxShadow: "0 2px 12px rgba(79, 140, 255, 0.15)",
+            transition: "all 0.3s ease",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "10px",
+            cursor: "pointer",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.boxShadow = "0 6px 16px rgba(79, 140, 255, 0.2)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 2px 12px rgba(79, 140, 255, 0.15)";
+          }}
+        >
+          <span style={{ fontSize: "18px" }}>💾</span> Salvar Alterações
+        </Button>
+      </div>
+    </div>
+  </div>
+)}
         {/* MINHAS RESERVAS */}
         {activeMenu === "reservas" && (
           <DashboardContainer>
