@@ -715,7 +715,7 @@ const Home = () => {
               display: 'grid',
               gap: '18px',
               marginBottom: '32px',
-              background: 'linear-gradient(120deg, #fff 60%, #e0e7ff 100%)',
+              background: 'linear-gradient(120deg, #fff 60%, #ffffffff 100%)',
               padding: '24px 20px',
               borderRadius: '14px',
               boxShadow: '0 4px 16px rgba(30,40,90,0.07)',
@@ -733,7 +733,7 @@ const Home = () => {
                   type="date"
                   value={filtroData}
                   onChange={e => setFiltroData(e.target.value)}
-                  style={{ background: "#f7faff" }}
+                  style={{ background: "#ffffffff" }}
                 />
               </div>
               <div style={{ flex: '1 1 200px', minWidth: 180 }}>
@@ -749,7 +749,7 @@ const Home = () => {
                   border: '1px solid #e0e0e0',
                   borderRadius: '8px',
                   fontSize: '14px',
-                  background: "#f7faff"
+                  background: "#ffffffff"
                 }}
                   value={filtroQuadra}
                   onChange={e => setFiltroQuadra(e.target.value)}
@@ -784,7 +784,7 @@ const Home = () => {
                   <Button
                     $small
                     style={{
-                      background: "#f0f0f0",
+                      background: "#ffffffff",
                       color: "#333",
                       fontWeight: 500,
                       padding: "10px 0",
@@ -831,7 +831,7 @@ const Home = () => {
                               <tr
                                 key={reserva.id}
                                 style={{
-                                background: reserva.status === "Cancelado" ? "#f8d7da" : undefined,
+                                background: reserva.status === "Cancelado" ? "#ffffffff" : undefined,
                                 opacity: reserva.status === "Cancelado" ? 0.6 : 1,
                                 transition: 'background 0.2s'
                                 }}
@@ -866,7 +866,7 @@ const Home = () => {
                                 <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
                                 <span style={{
                                   display: 'inline-block',
-                                  backgroundColor: '#e6f7ff',
+                                  backgroundColor: '#160f0fff',
                                   color: '#0077b6',
                                   padding: '4px 10px',
                                   borderRadius: '12px',

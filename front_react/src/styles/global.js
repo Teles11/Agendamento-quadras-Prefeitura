@@ -10,7 +10,7 @@ export const GlobalStyle = createGlobalStyle`
   body {
     font-family: ${({ theme }) => theme.fonts.primary};
     background-color: ${({ theme }) => theme.colors.dark}; /* Fundo preto */
-    color: ${({ theme }) => theme.colors.white}; /* Texto branco por padrão */
+    color: ${({ theme }) => theme.colors.black}; /* Texto branco por padrão */
     min-height: 100vh;
   }
 
