@@ -167,31 +167,10 @@ const Home = () => {
 
   // Estado para dados do usuário e reservas
   const [userData, setUserData] = useState({
-    nome: "João Silva",
-    email: "joao.silva@email.com",
-    endereco: "Av. Principal, 123 - Centro, Cidade - UF",
-    reservas: [
-      {
-        id: 1,
-        quadra: Quadras[0],
-        data: '2023-11-15',
-        horario: '14:00',
-        dataReserva: '2023-11-10T14:30:00',
-        status: 'Confirmado',
-        codigo: 'ABC123',
-        documentoEmitido: true
-      },
-      {
-        id: 2,
-        quadra: Quadras[1],
-        data: '2023-11-16',
-        horario: '18:00',
-        dataReserva: '2023-11-11T09:15:00',
-        status: 'Pendente',
-        codigo: 'DEF456',
-        documentoEmitido: false
-      }
-    ]
+    nome: "",
+    email: "",
+    endereco: "",
+    reservas: []
   });
 
   const [userPhoto, setUserPhoto] = useState("https://via.placeholder.com/120");
@@ -793,7 +772,7 @@ const Home = () => {
                     }}
                     onClick={() => { setFiltroData(""); setFiltroQuadra(""); }}
                   >
-                    <span style={{ marginRight: '5px' }}>🧹</span> Limpar
+                    <span style={{ marginRight: '1px' }}>🧹</span> Limpar
                   </Button>
                 )}
               </div>
