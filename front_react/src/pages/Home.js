@@ -44,7 +44,7 @@ const SidebarItem = styled.div`
 `;
 const Content = styled.div`
   flex: 1;
-  background: #f4f6fa;
+  background: #f9f9faff;
   padding: 20px;
   overflow-y: auto;
 `;
@@ -383,48 +383,56 @@ const gerarAlvaraPDF = async (reserva) => {
           </DashboardContainer>
         )}
 
-        {/* DETALHE DA QUADRA E AGENDAMENTO */}
-        {activeMenu === "dashboard" && selectedQuadra && (
-          <DetalheContainer>
-            <Button onClick={() => setSelectedQuadra(null)}>⬅ Voltar</Button>
-            <DetalheImagem src={selectedQuadra.imagem} alt={selectedQuadra.nome} />
-            <DetalheInfo>
-              <h2>{selectedQuadra.nome}</h2>
-              <h4>{selectedQuadra.bairro}</h4>
-              <p>{selectedQuadra.descricao}</p>
-            </DetalheInfo>
-            <label>Selecione a Data:</label>
-            <Input 
-              type="date" 
-              value={data} 
-              onChange={(e) => { setData(e.target.value); setHorarioSelecionado(""); }}
-              min={new Date().toISOString().split('T')[0]}
-            />
-            <h3>Selecione o Horário:</h3>
-            <HorariosGrid>
-              {horariosDisponiveis.map((hora) => (
-                <HorarioButton
-                  key={hora}
-                  ocupado={horariosOcupados.includes(hora)}
-                  disabled={horariosOcupados.includes(hora)}
-                  style={{
-                    border: isHorarioSelecionado(hora) ? "2px solid #007bff" : undefined,
-                    fontWeight: isHorarioSelecionado(hora) ? "bold" : undefined,
-                    background: isHorarioSelecionado(hora) ? "#0056b3" : (horariosOcupados.includes(hora) ? "#ccc" : "#007bff")
-                  }}
-                  onClick={() => setHorarioSelecionado(hora)}
-                >
-                  {hora}
-                </HorarioButton>
-              ))}
-            </HorariosGrid>
-            <div style={{ marginTop: "20px" }}>
-              <Button $primary onClick={handleConfirmar} disabled={!data || !horarioSelecionado}>
-                Confirmar
-              </Button>
-            </div>
-          </DetalheContainer>
-        )}
+{/* DETALHE DA QUADRA E AGENDAMENTO */}
+{activeMenu === "dashboard" && selectedQuadra && (
+  <DetalheContainer>
+    {/* BOTÃO VOLTAR COM ESPAÇAMENTO */}
+    <div style={{ marginBottom: "20px" }}>
+      <Button onClick={() => setSelectedQuadra(null)}>⬅ Voltar</Button>
+    </div>
+
+    <DetalheImagem src={selectedQuadra.imagem} alt={selectedQuadra.nome} />
+    <DetalheInfo>
+      <h2>{selectedQuadra.nome}</h2>
+      <h4>{selectedQuadra.bairro}</h4>
+      <p>{selectedQuadra.descricao}</p>
+    </DetalheInfo>
+    <label>Selecione a Data:</label>
+    <Input 
+      type="date" 
+      value={data} 
+      onChange={(e) => { setData(e.target.value); setHorarioSelecionado(""); }}
+      min={new Date().toISOString().split('T')[0]}
+    />
+    <h3>Selecione o Horário:</h3>
+    <HorariosGrid>
+      {horariosDisponiveis.map((hora) => (
+        <HorarioButton
+          key={hora}
+          ocupado={horariosOcupados.includes(hora)}
+          disabled={horariosOcupados.includes(hora)}
+          style={{
+            border: isHorarioSelecionado(hora) ? "2px solid #007bff" : undefined,
+            fontWeight: isHorarioSelecionado(hora) ? "bold" : undefined,
+            background: isHorarioSelecionado(hora)
+              ? "#0056b3"
+              : horariosOcupados.includes(hora)
+                ? "#ccc"
+                : "#007bff"
+          }}
+          onClick={() => setHorarioSelecionado(hora)}
+        >
+          {hora}
+        </HorarioButton>
+      ))}
+    </HorariosGrid>
+    <div style={{ marginTop: "20px" }}>
+      <Button $primary onClick={handleConfirmar} disabled={!data || !horarioSelecionado}>
+        Confirmar
+      </Button>
+    </div>
+  </DetalheContainer>
+)}
 
   {/* MINHA CONTA - VERSÃO INTEGRADA E APRIMORADA */}
 {activeMenu === "conta" && (
