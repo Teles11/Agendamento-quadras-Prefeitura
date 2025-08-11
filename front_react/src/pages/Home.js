@@ -134,7 +134,7 @@ const HorariosGrid = styled.div`
 `;
 const HorarioButton = styled.button`
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 888px;
   border: none;
   cursor: pointer;
   background: ${({ ocupado }) => (ocupado ? "#ccc" : "#007bff")};
