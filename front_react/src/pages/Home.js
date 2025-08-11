@@ -554,7 +554,7 @@ const gerarAlvaraPDF = async (reserva) => {
           Nome completo
         </label>
         <Input
-          value={userData.nome || "João Silva"}
+          value={userData.nome || ""}
           onChange={(e) => setUserData({ ...userData, nome: e.target.value })}
           placeholder="Seu nome completo"
           style={{
@@ -595,7 +595,7 @@ const gerarAlvaraPDF = async (reserva) => {
         </label>
         <Input
           type="email"
-          value={userData.email || "joao.silva@email.com"}
+          value={userData.email || ""}
           onChange={(e) => setUserData({ ...userData, email: e.target.value })}
           placeholder="Seu e-mail"
           style={{
@@ -635,7 +635,7 @@ const gerarAlvaraPDF = async (reserva) => {
           Endereço
         </label>
         <Input
-          value={userData.endereco || "Av. Principal, 123 - Centro, Cidade - UF"}
+          value={userData.endereco || ""}
           onChange={(e) => setUserData({ ...userData, endereco: e.target.value })}
           placeholder="Seu endereço"
           style={{
