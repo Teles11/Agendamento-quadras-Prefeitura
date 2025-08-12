@@ -222,7 +222,7 @@ const gerarAlvaraPDF = async (reserva) => {
     doc.line(marginLeft, 65, pageWidth - marginLeft, 65);
 
     doc.setFontSize(18);
-    doc.text('ALVARÁ DE AUTORIZAÇÃO', centerX, 75, { align: 'center' });
+    doc.text('OFÍCIO DE AUTORIZAÇÃO', centerX, 75, { align: 'center' });
     doc.setFontSize(12);
     doc.text(`Nº ${reserva.codigo}`, centerX, 81, { align: 'center' });
 
@@ -826,150 +826,150 @@ const gerarAlvaraPDF = async (reserva) => {
 
             return (
               <tr
-                key={reserva.id}
+              key={reserva.id}
+              style={{
+              background: reserva.status === "Cancelado" ? "#ffffffff" : undefined,
+              opacity: reserva.status === "Cancelado" ? 0.6 : 1,
+              transition: 'background 0.2s'
+              }}
+              >
+              <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <img
+                src={reserva.quadra.imagem}
+                alt={reserva.quadra.nome}
                 style={{
-                  background: reserva.status === "Cancelado" ? "#ffffffff" : undefined,
-                  opacity: reserva.status === "Cancelado" ? 0.6 : 1,
-                  transition: 'background 0.2s'
+                width: '48px',
+                height: '48px',
+                borderRadius: '6px',
+                objectFit: 'cover',
+                border: '1px solid #e0e0e0'
+                }}
+              />
+              <div>
+                <div style={{ fontWeight: '600', fontSize: '14px' }}>{reserva.quadra.nome}</div>
+                <div style={{ fontSize: '12px', color: '#666' }}>{reserva.quadra.bairro}</div>
+              </div>
+              </div>
+              </td>
+              <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
+              <div style={{ fontWeight: '500', fontSize: '14px' }}>
+              {formatarData(reserva.data)}
+              </div>
+              <div style={{ fontSize: '12px', color: '#666' }}>
+              {diaSemana}
+              </div>
+              </td>
+              <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
+              <span style={{
+              display: 'inline-block',
+              backgroundColor: '#160f0fff',
+              color: '#0077b6',
+              padding: '4px 10px',
+              borderRadius: '12px',
+              fontWeight: '600',
+              fontSize: '13px'
+              }}>
+              {reserva.horario}
+              </span>
+              </td>
+              <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
+              <div style={{ fontWeight: '500', fontSize: '14px' }}>
+              {new Date(reserva.dataReserva).toLocaleDateString('pt-BR')}
+              </div>
+              <div style={{ fontSize: '12px', color: '#666' }}>
+              às {new Date(reserva.dataReserva).toLocaleTimeString('pt-BR', {
+                hour: '2-digit',
+                minute: '2-digit'
+              })}
+              </div>
+              </td>
+              <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
+              <span style={{
+              padding: '5px 10px',
+              borderRadius: '12px',
+              fontSize: '12px',
+              fontWeight: '600',
+              display: 'inline-block',
+              backgroundColor:
+                (reserva.status === 'Reservado' || reserva.status === 'Confirmado') ? '#e6f7ee' :
+                reserva.status === 'Pendente' ? '#fff8e6' : '#ffebee',
+              color:
+                (reserva.status === 'Reservado' || reserva.status === 'Confirmado') ? '#28a745' :
+                reserva.status === 'Pendente' ? '#ffc107' : '#dc3545'
+              }}>
+              {reserva.status === 'Confirmado' ? 'Reservado' : reserva.status}
+              </span>
+              </td>
+              <td style={{ padding: '14px 12px', textAlign: 'center', verticalAlign: 'middle' }}>
+              {reserva.status !== 'Cancelado' ? (
+              <Button
+                $small
+                style={{
+                backgroundColor: '#4CAF50',
+                color: 'white',
+                minWidth: '90px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '6px 10px',
+                justifyContent: 'center'
+                }}
+                onClick={() => gerarAlvaraPDF(reserva)}
+              >
+                <span>📄</span>
+                <span style={{ fontSize: '12px' }}>Emitir Ofício</span>
+              </Button>
+              ) : (
+              <span style={{ fontSize: '12px', color: '#666', fontStyle: 'italic' }}>
+                Indisponível
+              </span>
+              )}
+              </td>
+              <td style={{ padding: '14px 12px', textAlign: 'center', verticalAlign: 'middle' }}>
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+              <Button
+                $small
+                style={{
+                backgroundColor: '#f0f0f0',
+                color: '#333',
+                minWidth: '30px',
+                padding: '6px'
+                }}
+                onClick={() => {
+                alert(`📋 Detalhes da reserva:
+          🏟️ Quadra: ${reserva.quadra.nome}
+          📅 Data: ${formatarData(reserva.data)} (${new Date(`${reserva.data}T00:00:00`).toLocaleDateString('pt-BR', { weekday: 'long' })})
+          ⏰ Horário: ${reserva.horario}
+          📝 Reservado em: ${new Date(reserva.dataReserva).toLocaleString('pt-BR')}
+          🆔 Código: ${reserva.codigo}
+          📌 Status: ${reserva.status === 'Confirmado' ? 'Reservado' : reserva.status}`);
                 }}
               >
-                <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <img
-                      src={reserva.quadra.imagem}
-                      alt={reserva.quadra.nome}
-                      style={{
-                        width: '48px',
-                        height: '48px',
-                        borderRadius: '6px',
-                        objectFit: 'cover',
-                        border: '1px solid #e0e0e0'
-                      }}
-                    />
-                    <div>
-                      <div style={{ fontWeight: '600', fontSize: '14px' }}>{reserva.quadra.nome}</div>
-                      <div style={{ fontSize: '12px', color: '#666' }}>{reserva.quadra.bairro}</div>
-                    </div>
-                  </div>
-                </td>
-                <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
-                  <div style={{ fontWeight: '500', fontSize: '14px' }}>
-                    {formatarData(reserva.data)}
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>
-                    {diaSemana}
-                  </div>
-                </td>
-                <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
-                  <span style={{
-                    display: 'inline-block',
-                    backgroundColor: '#160f0fff',
-                    color: '#0077b6',
-                    padding: '4px 10px',
-                    borderRadius: '12px',
-                    fontWeight: '600',
-                    fontSize: '13px'
-                  }}>
-                    {reserva.horario}
-                  </span>
-                </td>
-                <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
-                  <div style={{ fontWeight: '500', fontSize: '14px' }}>
-                    {new Date(reserva.dataReserva).toLocaleDateString('pt-BR')}
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>
-                    às {new Date(reserva.dataReserva).toLocaleTimeString('pt-BR', {
-                      hour: '2-digit',
-                      minute: '2-digit'
-                    })}
-                  </div>
-                </td>
-                <td style={{ padding: '14px 12px', verticalAlign: 'middle' }}>
-                  <span style={{
-                    padding: '5px 10px',
-                    borderRadius: '12px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    display: 'inline-block',
-                    backgroundColor:
-                      reserva.status === 'Confirmado' ? '#e6f7ee' :
-                        reserva.status === 'Pendente' ? '#fff8e6' : '#ffebee',
-                    color:
-                      reserva.status === 'Confirmado' ? '#28a745' :
-                        reserva.status === 'Pendente' ? '#ffc107' : '#dc3545'
-                  }}>
-                    {reserva.status}
-                  </span>
-                </td>
-                <td style={{ padding: '14px 12px', textAlign: 'center', verticalAlign: 'middle' }}>
-                  {reserva.status !== 'Cancelado' ? (
-                    <Button
-                      $small
-                      style={{
-                        backgroundColor: '#4CAF50',
-                        color: 'white',
-                        minWidth: '90px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '5px',
-                        padding: '6px 10px',
-                        justifyContent: 'center'
-                      }}
-                      onClick={() => gerarAlvaraPDF(reserva)}
-                    >
-                      <span>📄</span>
-                      <span style={{ fontSize: '12px' }}>Emitir Alvará</span>
-                    </Button>
-                  ) : (
-                    <span style={{ fontSize: '12px', color: '#666', fontStyle: 'italic' }}>
-                      Indisponível
-                    </span>
-                  )}
-                </td>
-                <td style={{ padding: '14px 12px', textAlign: 'center', verticalAlign: 'middle' }}>
-                  <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                    <Button
-                      $small
-                      style={{
-                        backgroundColor: '#f0f0f0',
-                        color: '#333',
-                        minWidth: '30px',
-                        padding: '6px'
-                      }}
-                      onClick={() => {
-                        alert(`📋 Detalhes da reserva:
-🏟️ Quadra: ${reserva.quadra.nome}
-📅 Data: ${formatarData(reserva.data)} (${new Date(`${reserva.data}T00:00:00`).toLocaleDateString('pt-BR', { weekday: 'long' })})
-⏰ Horário: ${reserva.horario}
-📝 Reservado em: ${new Date(reserva.dataReserva).toLocaleString('pt-BR')}
-🆔 Código: ${reserva.codigo}
-📌 Status: ${reserva.status}`);
-                      }}
-                    >
-                      👁️
-                    </Button>
-                    {reserva.status !== 'Cancelado' && (
-                      <Button
-                        $small
-                        $danger
-                        style={{ minWidth: '30px', padding: '6px' }}
-                        onClick={() => {
-                          if (window.confirm(`Deseja realmente cancelar a reserva na ${reserva.quadra.nome} para ${formatarData(reserva.data)} às ${reserva.horario}?`)) {
-                            setUserData(prev => ({
-                              ...prev,
-                              reservas: prev.reservas.map(r =>
-                                r.id === reserva.id ? { ...r, status: 'Cancelado' } : r
-                              )
-                            }));
-                            alert('Reserva cancelada com sucesso!');
-                          }
-                        }}
-                      >
-                        ❌
-                      </Button>
-                    )}
-                  </div>
-                </td>
+                👁️
+              </Button>
+              {reserva.status !== 'Cancelado' && (
+                <Button
+                $small
+                $danger
+                style={{ minWidth: '30px', padding: '6px' }}
+                onClick={() => {
+                if (window.confirm(`Deseja realmente cancelar a reserva na ${reserva.quadra.nome} para ${formatarData(reserva.data)} às ${reserva.horario}?`)) {
+                setUserData(prev => ({
+                  ...prev,
+                  reservas: prev.reservas.map(r =>
+                  r.id === reserva.id ? { ...r, status: 'Cancelado' } : r
+                  )
+                }));
+                alert('Reserva cancelada com sucesso!');
+                }
+                }}
+                >
+                ❌
+                </Button>
+              )}
+              </div>
+              </td>
               </tr>
             );
           })}
